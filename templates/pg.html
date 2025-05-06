@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DealDepot Payment Gateway</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link
+      rel="shortcut icon"
+      href="/static/images/logo favicon.png"
+      type="image/x-icon"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+      body {
+        background: #fff;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      .container-box {
+        width: 85%;
+        max-width: 1100px;
+        background: #fff;
+        box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        position: relative;
+      }
+      .left-panel {
+        width: 250px;
+        background-color: #f4f4f4;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .left-panel img {
+        height: 100px;
+        width: auto;
+        margin-bottom: 20px;
+      }
+      .left-panel h3 {
+        font-size: 16px;
+        margin-bottom: 10px;
+        color: #333;
+      }
+      .left-panel span {
+        font-size: 14px;
+        color: #777;
+        margin-bottom: 15px;
+      }
+      .left-panel hr {
+        width: 100%;
+        border-color: #ccc;
+        margin: 10px 0;
+      }
+      .right-panel {
+        width: 75%;
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+      }
+      .nav-pills .nav-link {
+        color: #333;
+        font-size: 16px;
+      }
+      .nav-pills .nav-link.active {
+        background-color: #e94a2e;
+        color: #fff;
+      }
+      .payment-section {
+        display: none;
+      }
+      .payment-section.active {
+        display: block;
+      }
+      .confirm-payment {
+        background-color: #e94a2e;
+        color: #fff;
+        border: none;
+        padding: 10px;
+        width: 100%;
+        font-size: 18px;
+        margin-top: 20px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .confirmation {
+        display: none;
+        text-align: center;
+      }
+      .confirmation i {
+        font-size: 50px;
+        color: green;
+        animation: pop 0.5s ease-in-out;
+      }
+      @keyframes pop {
+        0% {
+          transform: scale(0);
+          opacity: 0;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      .wallet-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+      }
+      .wallet-buttons .cancel-payment {
+        background-color: #fff;
+        color: #e94a2e;
+        border: 1px solid #e94a2e;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      #upiQR {
+        width: 200px;
+        height: 200px;
+        margin-top: 15px;
+      }
+      @media (max-width: 768px) {
+        .container-box {
+          flex-direction: column;
+        }
+        .right-panel {
+          width: 100%;
+        }
+        .left-panel {
+          width: 100%;
+          margin-bottom: 20px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container-box">
+      <div class="left-panel">
+        <img src="/static/images/logo favicon.png" alt="Merchant Logo" />
+        <hr />
+        <h3>Customer Name</h3>
+        <span id="custName"></span>
+        <h3>Customer Phone</h3>
+        <span id="custPhone"></span>
+        <h3>Net Payable (All Taxes Included)</h3>
+        <span id="custAmount"></span>
+        <hr />
+        <h3>Order ID</h3>
+        <span id="orderId"></span>
+        <h3>Cashier</h3>
+        <span id="cashier"></span>
+      </div>
+
+      <div class="right-panel">
+        <h2>DealDepot Payment Gateway</h2>
+        <ul class="nav nav-pills flex-row mb-3">
+          <li class="nav-item">
+            <a class="nav-link active" href="#" data-section="upi"
+              ><i class="fas fa-qrcode"></i> UPI</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-section="cards"
+              ><i class="fas fa-credit-card"></i> Cards</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-section="netbanking"
+              ><i class="fas fa-university"></i> Net Banking</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-section="wallets"
+              ><i class="fas fa-wallet"></i> Wallets</a
+            >
+          </li>
+        </ul>
+
+        <div id="payment-sections">
+          <div id="upi" class="payment-section active">
+            <h4>Pay via UPI</h4>
+            <div id="upiQR"></div>
+            <div class="wallet-buttons">
+              <button
+                class="cancel-payment"
+                data-bs-toggle="modal"
+                data-bs-target="#cancelModal"
+              >
+                Cancel Payment
+              </button>
+              <button class="confirm-payment">Confirm Payment</button>
+            </div>
+          </div>
+
+          <div id="cards" class="payment-section">
+            <h4>Enter Card Details</h4>
+            <input
+              type="text"
+              id="card-number"
+              maxlength="19"
+              class="form-control"
+              placeholder="Card Number"
+            />
+            <input
+              type="text"
+              maxlength="5"
+              id="expiry-date"
+              class="form-control mt-2"
+              placeholder="MM/YY"
+            />
+            <input
+              type="password"
+              maxlength="3"
+              class="form-control mt-2"
+              placeholder="CVV"
+            />
+            <div class="wallet-buttons">
+              <button
+                class="cancel-payment"
+                data-bs-toggle="modal"
+                data-bs-target="#cancelModal"
+              >
+                Cancel Payment
+              </button>
+              <button class="confirm-payment">Confirm Payment</button>
+            </div>
+          </div>
+
+          <div id="netbanking" class="payment-section">
+            <h4>Net Banking</h4>
+            <p><strong>Account Number:</strong> 42262290380</p>
+            <p><strong>Code:</strong> SBIN0050235</p>
+            <div class="wallet-buttons">
+              <button
+                class="cancel-payment"
+                data-bs-toggle="modal"
+                data-bs-target="#cancelModal"
+              >
+                Cancel Payment
+              </button>
+              <button class="confirm-payment">Confirm Payment</button>
+            </div>
+          </div>
+
+          <div id="wallets" class="payment-section">
+            <h4>Wallet Payment</h4>
+            <input type="text" class="form-control" placeholder="Wallet ID" />
+            <select class="form-control mt-2">
+              <option>Select Wallet</option>
+              <option>Paytm Wallet</option>
+              <option>Amazon Pay</option>
+              <option>PhonePe</option>
+              <option>Mobikwik</option>
+              <option>Freecharge</option>
+            </select>
+            <div class="wallet-buttons">
+              <button
+                class="cancel-payment"
+                data-bs-toggle="modal"
+                data-bs-target="#cancelModal"
+              >
+                Cancel Payment
+              </button>
+              <button class="confirm-payment">Confirm Payment</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="confirmation">
+          <i class="fas fa-check-circle"></i>
+          <h3>Payment Successful</h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cancel Modal -->
+    <div
+      class="modal fade"
+      id="cancelModal"
+      tabindex="-1"
+      aria-labelledby="cancelModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="cancelModalLabel">
+              Are you sure you want to cancel?
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            This action will stop the current payment process.
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+              No, Continue
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              onclick="redirectToPos()"
+            >
+              Yes, Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function redirectToPos() {
+        window.location.href = "/pos";
+      }
+
+      $(document).ready(function () {
+        const lastOrder = JSON.parse(
+          localStorage.getItem("last_order") || "{}"
+        );
+        const name = lastOrder.customerName || "N/A";
+        const phone = lastOrder.contact || "N/A";
+        const amount = parseFloat(lastOrder.amount || "0.00");
+        const emp_code = localStorage.getItem("emp_code") || "Unknown";
+
+        $("#custName").text(name);
+        $("#custPhone").text(phone);
+        $("#custAmount").text("₹ " + amount.toFixed(2));
+        $("#cashier").text(emp_code);
+
+        let orderId = parseInt(localStorage.getItem("orderId") || "0") + 1;
+        localStorage.setItem("orderId", orderId);
+        $("#orderId").text("ORD" + String(orderId).padStart(4, "0"));
+
+        // ✅ Generate dynamic UPI QR
+        const upiUrl = `upi://pay?pa=adarshdhiman75066-1@oksbi&pn=DealDepot&am=${amount}&cu=INR`;
+        $("#upiQR").empty();
+        new QRCode(document.getElementById("upiQR"), {
+          text: upiUrl,
+          width: 200,
+          height: 200,
+        });
+
+        $(".nav-link").click(function () {
+          $(".nav-link").removeClass("active");
+          $(this).addClass("active");
+          $(".payment-section").removeClass("active");
+          $("#" + $(this).data("section")).addClass("active");
+        });
+
+        $(".confirm-payment").click(async function () {
+          const today = new Date().toISOString().split("T")[0];
+          const timestamp = Date.now(); // Bill number
+          const filename = `Bill_${timestamp}.pdf`;
+          const bill_no = timestamp;
+
+          try {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            let yOffset = 20;
+
+            doc.setFont("times", "normal");
+            doc.addImage(
+              "/static/images/logo png square.png",
+              "PNG",
+              80,
+              yOffset,
+              40,
+              40
+            );
+            yOffset += 50;
+
+            doc.setFontSize(16);
+            doc.text("Purchase Invoice", 105, yOffset, { align: "center" });
+            yOffset += 15;
+
+            doc.setFontSize(12);
+            doc.text(`Customer: ${name}`, 20, yOffset);
+            yOffset += 10;
+            doc.text(`Phone: ${phone}`, 20, yOffset);
+            yOffset += 10;
+            doc.text(`Cashier: ${emp_code}`, 20, yOffset);
+            yOffset += 10;
+            doc.text(`Amount Paid: Rs. ${amount}/-`, 20, yOffset);
+            yOffset += 10;
+            doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, yOffset);
+
+            doc.save(filename);
+            console.log("✅ Bill generated:", filename);
+
+            const payload = {
+              name: name,
+              amount: amount,
+              emp_code: emp_code,
+              date: today,
+              bill_no: bill_no,
+            };
+
+            const response = await fetch("/api/save_sales", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(payload),
+            });
+
+            const result = await response.json();
+            if (!response.ok || result.message !== "Sale saved successfully") {
+              throw new Error(result.message || "Failed to save sale");
+            }
+
+            console.log("✅ Sale saved:", result);
+
+            localStorage.removeItem("last_order");
+
+            $(".right-panel > *").hide();
+            $(".confirmation").show();
+            setTimeout(() => redirectToPos(), 5000);
+          } catch (error) {
+            console.error("❌ Payment processing failed:", error);
+            alert("Failed to process payment. Please try again.");
+          }
+        });
+
+        $("#card-number").on("input", function () {
+          let value = $(this)
+            .val()
+            .replace(/\D/g, "")
+            .replace(/(.{4})/g, "$1 ")
+            .trim();
+          $(this).val(value);
+        });
+
+        $("#expiry-date").on("input", function () {
+          let value = $(this).val().replace(/\D/g, "");
+          if (value.length >= 3) {
+            value = value.slice(0, 2) + "/" + value.slice(2, 4);
+          }
+          $(this).val(value);
+        });
+      });
+    </script>
+  </body>
+</html>

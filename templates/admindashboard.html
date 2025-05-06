@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DealDepot - Admin Panel</title>
+    <link
+      rel="shortcut icon"
+      href="/static/images/logo favicon.png"
+      type="image/x-icon"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+      .sidebar {
+        width: 280px;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: #f8f9fa;
+        padding: 15px;
+        transition: all 0.3s ease-in-out;
+      }
+
+      .main-content {
+        margin-left: 280px;
+        padding: 20px;
+        transition: all 0.3s ease-in-out;
+      }
+
+      .content-section {
+        display: none;
+      }
+
+      .active-section {
+        display: block;
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          left: -280px;
+        }
+        .main-content {
+          margin-left: 0;
+        }
+      }
+
+      .sidebar.show {
+        left: 0;
+      }
+
+      .nav-link.active {
+        background-color: #008ab3 !important;
+        color: white !important;
+      }
+
+      #toggleBtn {
+        background-color: #008ab3;
+        border-color: #008ab3;
+      }
+      .sidebar .collapse-btn {
+        background-color: #008ab3;
+        color: white;
+        border: none;
+        margin-top: 20px;
+        cursor: pointer;
+        .card {
+    transition: 0.3s;
+  }
+      .card:hover {
+  transform: scale(1.05);
+}
+.employee-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    .employee-table th,
+    .employee-table td {
+      border: 1px solid #ccc;
+      padding: 8px 12px;
+      text-align: left;
+    }
+    .employee-table th {
+      background-color: #f4f4f4;
+    }
+    .filter-section {
+      margin-bottom: 10px;
+    }
+    .download-buttons {
+      margin-top: 10px;
+    }
+      }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+  </head>
+  <body class="bg-light">
+    <!-- Sidebar -->
+    <div class="sidebar d-flex flex-column flex-shrink-0" id="sidebar">
+      <a
+        href="#"
+        class="d-flex align-items-center mb-3 link-dark text-decoration-none"
+      >
+        <img
+          src="/static/images/logo png square.png"
+          alt="Logo"
+          class="me-2"
+          style="height: 150px; width: auto; margin-left: 20px"
+        />
+      </a>
+      <hr />
+      <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item">
+          <a
+            href="#"
+            class="nav-link link-dark active"
+            onclick="showContent(event, 'home')"
+            >Home</a
+          >
+        </li>
+        <li>
+          <a
+            href="#"
+            class="nav-link link-dark"
+            onclick="showContent(event, 'dashboard')"
+            >Inventory Management</a
+          >
+        </li>
+        <li>
+          <a
+            href="#"
+            class="nav-link link-dark"
+            onclick="showContent(event, 'orders')"
+            >Sales Records</a
+          >
+        </li>
+        <li>
+          <a
+            href="#"
+            class="nav-link link-dark"
+            onclick="showContent(event, 'products')"
+            >Employee Attendance Records</a
+          >
+        </li>
+        <li>
+          <a
+            href="#"
+            class="nav-link link-dark"
+            onclick="showContent(event, 'customers')"
+            >Manage Employees</a
+          >
+        </li>
+      </ul>
+      <hr />
+      <div class="d-flex align-items-center mt-3">
+        <img
+          src="https://t3.ftcdn.net/jpg/00/65/75/68/360_F_65756860_GUZwzOKNMUU3HldFoIA44qss7ZIrCG8I.jpg"
+          width="40"
+          height="40"
+          class="rounded-circle me-2"
+        />
+        <strong>Admin</strong>
+      </div>
+      <a
+        href="/"
+        class="btn btn-danger mt-2 w-100"
+        style="background-color: #e94a2d"
+        ><i class="fas fa-power-off"></i> Sign Out</a
+      
+    
+
+      <!-- Button to collapse the sidebar -->
+      <button class="collapse-btn d-md-none" id="collapseSidebarBtn">
+        ☰ Collapse Menu
+      </button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div id="home" class="content-section active-section">
+        <center><h2 style="color: #e94a2d">Home</h2></center>
+
+        <br />
+        <div
+          class="d-flex justify-content-center align-items-center form-container"
+        >
+          <div class="p-4 rounded shadow" style="max-width: 500px; width: 100%">
+            <div class="mb-3">
+              <p><strong>Date:</strong> <span id="today-date"></span></p>
+              <p id="total-sales">
+                Today's Sales:
+                <img
+                  src="/static/images/loading-buffering.gif"
+                  alt=""
+                  style="height: 25px; width: auto"
+                />
+              </p>
+            </div>
+
+            <div class="mb3">
+              <p id="total-attendance">
+                Total Attendance:
+                <img
+                  src="/static/images/loading-buffering.gif"
+                  alt=""
+                  style="height: 25px; width: auto"
+                />
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script src="script.js"></script>
+
+      <div id="dashboard" class="content-section">
+        <center><h2 style="color: #e94a2d;">Inventory Management</h2></center>
+        <br>
+        <button class="btn mt-3" data-bs-toggle="modal" data-bs-target="#addProductModal" style="background-color: #e94a2d; color: #fff;">Add More Products</button>
+        
+    
+        <!-- Tabs for categories -->
+        <ul class="nav nav-tabs" id="categoryTabs">
+          <li class="nav-item"><a class="nav-link active" href="#" data-category="All"> All </a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-category=" Groceries "> Groceries </a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-category=" Household Essentials "> Household Essentials </a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-category=" Personal Care & Hygiene "> Personal Care & Hygiene </a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-category=" Baby & Kids "> Baby & Kids Products </a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-category=" Health & Wellness "> Health & Wellness </a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-category=" Stationery & Books "> Stationery & Books </a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-category=" Electronics & Accessories "> Electronics & Accessories </a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-category=" Clothing & Footwear "> Clothing & Footwear </a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-category=" Beauty & Cosmetics "> Beauty & Cosmetics </a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-category=" Home & Kitchen Essentials "> Home & Kitchen Essentials </a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-category=" Automotive Accessories "> Automotive Accessories </a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-category=" Pet Supplies "> Pet Supplies </a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-category=" Sports & Fitness "> Sports & Fitness </a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-category=" Home Improvement & Hardware "> Home Improvement & Hardware </a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-category=" Travel & Luggage "> Travel & Luggage </a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-category=" Luxury & Fashion Accessories "> Luxury & Fashion Accessories </a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-category=" Toys & Games "> Toys & Games </a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-category=" Party & Festive Supplies "> Party & Festive Supplies </a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-category=" Gardening & Outdoor Supplies "> Gardening & Outdoor Supplies </a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-category=" Industrial & Office Supplies "> Industrial & Office Supplies </a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-category=" Special Sections (Seasonal & Occasional) "> Special Sections (Seasonal & Occasional) </a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-category=" Books & Media "> Books & Media </a></li>
+      </ul>
+      
+    
+        <!-- Product Cards -->
+        <div id="product-container" class="row mt-3"></div>
+    
+        <!-- Add Product Button -->
+      
+    </div>
+    <script>
+      document.getElementById("categoryDropdown").addEventListener("change", function() {
+        let selectedCategory = this.value;
+        filterProducts(selectedCategory);
+    });
+    
+    function filterProducts(category) {
+        let products = document.querySelectorAll("#product-container .product");
+        products.forEach(product => {
+            if (category === "All" || product.dataset.category === category) {
+                product.style.display = "block";
+            } else {
+                product.style.display = "none";
+            }
+        });
+    }
+    </script>
+    
+    <!-- Bootstrap Modal for Adding Products -->
+    <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addProductModalLabel">Add New Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addProductForm">
+                        <div class="mb-3">
+                            <label class="form-label">Product Name</label>
+                            <input type="text" class="form-control" id="productName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Image URL</label>
+                            <input type="url" class="form-control" id="productImage" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Category</label>
+                            <select class="form-control" id="productCategory" required>
+                              <option value=" Groceries "> Groceries </option>
+                              <option value=" Household Essentials "> Household Essentials </option>
+                              <option value=" Personal Care & Hygiene "> Personal Care & Hygiene </option>
+                              <option value=" Baby & Kids "> Baby & Kids Products </option>
+                              <option value=" Health & Wellness "> Health & Wellness </option>
+                              <option value=" Stationery & Books "> Stationery & Books </option>
+                              <option value=" Electronics & Accessories "> Electronics & Accessories </option>
+                              <option value=" Clothing & Footwear "> Clothing & Footwear </option>
+                              <option value=" Beauty & Cosmetics "> Beauty & Cosmetics </option>
+                              <option value=" Home & Kitchen Essentials "> Home & Kitchen Essentials </option>
+                              <option value=" Automotive Accessories "> Automotive Accessories </option>
+                              <option value=" Pet Supplies "> Pet Supplies </option>
+                              <option value=" Sports & Fitness "> Sports & Fitness </option>
+                              <option value=" Home Improvement & Hardware "> Home Improvement & Hardware </option>
+                              <option value=" Travel & Luggage "> Travel & Luggage </option>
+                              <option value=" Luxury & Fashion Accessories "> Luxury & Fashion Accessories </option>
+                              <option value=" Toys & Games "> Toys & Games </option>
+                              <option value=" Party & Festive Supplies "> Party & Festive Supplies </option>
+                              <option value=" Gardening & Outdoor Supplies "> Gardening & Outdoor Supplies </option>
+                              <option value=" Industrial & Office Supplies "> Industrial & Office Supplies </option>
+                              <option value=" Special Sections (Seasonal & Occasional) "> Special Sections (Seasonal & Occasional) </option>
+                              <option value=" Books & Media "> Books & Media </option>
+                          </select>
+                          
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Price (₹)</label>
+                            <input type="number" class="form-control" id="productPrice" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Stock Quantity</label>
+                            <input type="number" class="form-control" id="productStock" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Product</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+  
+    
+  
+    
+    
+      
+    <div id="orders" class="content-section">
+      <center><h2 style="color: #e94a2d">Sales Records</h2></center>
+    
+      
+      <!-- Date Filter -->
+      <div class="filter-section">
+        <label for="filterDate">Filter by Date:</label>
+        <input type="date" id="filterDate" class="form-control" />
+      </div>
+      
+      
+      <!-- Sales Records Table (employee list style) -->
+      <table class="table table-bordered table-hover mt-3">
+        <thead class="table-dark">
+          <tr>
+            <th style="background-color: #008ab3;">Date</th>
+            <th style="background-color: #008ab3;">Employee Code</th>
+            <th style="background-color: #008ab3;">Bill Number</th>
+            <th style="background-color: #008ab3;">Total Cost</th>
+          </tr>
+        </thead>
+        <tbody id="salesTableBody">
+          <!-- Sales records will be dynamically inserted here -->
+        </tbody>
+      </table>
+      
+      
+      <!-- Download Report Buttons -->
+      <div class="download-buttons">
+     
+        <button class="btn" onclick="downloadPDF()" style="background-color: #e94a2d; color: #fff;">Download Report</button>
+      </div>
+    </div>
+  
+    <div id="products" class="content-section">
+      <center><h2 style="color: #e94a2d">Employee Attendance Records</h2></center>
+      <div class="filter-section">
+          <label for="filterEMPCode">Filter by Employee Code</label>
+          <input type="text" id="filterEMPCode" class="form-control" />
+          <label for="filterEMPDate">Filter by Date:</label>
+          <input type="date" id="filterEMPDate" class="form-control" />
+      </div>
+      <table class="table table-bordered table-hover mt-3">
+          <thead class="table-dark">
+              <tr>
+                  <th style="background-color: #008ab3;">Date</th>
+                  <th style="background-color: #008ab3;">Employee Code</th>
+              </tr>
+          </thead>
+          <tbody id="AttendanceTableBody">
+          </tbody>
+      </table>
+      <div class="download-buttons">
+        <button class="btn" onclick="downloadAPDF()" style="background-color: #e94a2d; color: #fff;">Download Report</button>
+      </div>
+  </div>
+
+      
+      <div id="customers" class="content-section container mt-5">
+        <h2 class="text-center mb-4" style="color: #e94a2d">Manage Employees</h2>
+
+        <!-- Add / > Employee Form -->
+        <div class="card shadow-lg">
+          <div class="card-header text-white" style="background-color: #008ab3">
+            <h4 class="mb-0" id="formTitle">Add Employee</h4>
+          </div>
+          <div class="card-body">
+            <form id="employeeForm" class="row g-3">
+              <div class="col-md-4">
+                <label for="emp_code" class="form-label">Employee Code</label>
+                <input
+                  type="text"
+                  id="emp_code"
+                  class="form-control"
+                  required
+                />
+              </div>
+
+              <div class="col-md-4">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" id="name" class="form-control" required />
+              </div>
+
+              <div class="col-md-4">
+                <label for="doj" class="form-label">Date of Joining</label>
+                <input type="date" id="doj" class="form-control" required />
+              </div>
+
+              <div class="col-12 text-center mt-3">
+                <button
+                  type="submit"
+                  class="btn btn-success w-25"
+                  id="submitButton"
+                  style="background-color: #e94a2d"
+                >
+                  Add Employee
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-secondary w-25 d-none"
+                  id="cancelEdit"
+                  style="background-color: #e94a2d"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <hr class="my-5" />
+
+        <!-- Employee Table -->
+        <h3 class="text-center">Employee List</h3>
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover mt-3">
+            <thead class="table-dark">
+              <tr>
+                <th style="background-color: #008ab3;">Employee Code</th>
+                <th style="background-color: #008ab3;">Name</th>
+                <th style="background-color: #008ab3;">Date of Joining</th>
+                <th style="background-color: #008ab3;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="employeeTableBody">
+              <!-- Employee records will be dynamically inserted here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- JavaScript -->
+      <script src="/static/js/admin.js"></script>
+
+      <!-- Bootstrap JS (for interactivity) -->
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </div>
+
+    <button class="btn btn-primary d-md-none m-3" id="toggleBtn">☰ Menu</button>
+
+    <script>
+      function showContent(event, sectionId) {
+        event.preventDefault();
+        document
+          .querySelectorAll(".content-section")
+          .forEach((section) => section.classList.remove("active-section"));
+        document.getElementById(sectionId).classList.add("active-section");
+
+        document
+          .querySelectorAll(".nav-link")
+          .forEach((link) => link.classList.remove("active"));
+        event.target.classList.add("active");
+      }
+
+      document
+        .getElementById("toggleBtn")
+        .addEventListener("click", function () {
+          document.getElementById("sidebar").classList.toggle("show");
+          // Hide the collapse button when expanded
+        });
+
+      // Collapse button functionality
+      document
+        .getElementById("collapseSidebarBtn")
+        .addEventListener("click", function () {
+          document.getElementById("sidebar").classList.remove("show");
+          document.getElementById("toggleBtn").classList.remove("d-none"); // Show the main toggle button again
+          // Hide the collapse button
+        });
+      // 📌 Fetch data from FastAPI and update the dashboard after a delay
+      document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(() => {
+          fetch("/api/today") // Change URL if hosted on a server
+            .then((response) => response.json())
+            .then((data) => {
+              document.getElementById("total-sales").innerText =
+                "Today's Sales: ₹" + data.total_sales;
+              document.getElementById("total-attendance").innerText =
+                "Total Attendance: " + data.total_attendance;
+            })
+            .catch((error) => console.error("Error fetching data:", error));
+        }, 1500); // 2000 milliseconds = 2 seconds
+
+        // 📌 Update the date dynamically in the HTML after a delay
+        setTimeout(() => {
+          let todayDate = new Date().toISOString().split("T")[0]; // Format: YYYY-MM-DD
+          document.getElementById("today-date").innerText = todayDate;
+        }, 1000); // 2000 milliseconds = 2 seconds
+      });
+
+
+
+      // Fetch and display the products in the inventory management section
+      document.addEventListener("DOMContentLoaded", function () {
+      loadProducts("All"); // Load all products initially
+    setupCategoryFilters();
+    setupSalesRecords();
+    setupAttendanceRecords();
+});
+
+// ✅ Load Products from API and Display
+function loadProducts(category = "All") {
+    let container = document.getElementById("product-container");
+    container.innerHTML = ""; // Clear previous content
+
+    fetch("/api/products")
+        .then(response => {
+            if (!response.ok) throw new Error("Network response was not ok");
+            return response.json();
+        })
+        .then(data => {
+            console.log("Fetched Products:", data);
+
+            for (let i = 0; i < data.product.length; i++) {
+                if (category === "All" || data.category[i] === category) {
+                    let card = document.createElement("div");
+                    card.classList.add("col-lg-3", "col-md-4", "col-sm-6", "mb-3");
+
+                    card.innerHTML = `
+                        <div class="card shadow-sm" style="width: 100%; max-width: 220px; margin: auto;" loading="lazy">
+                            <img src="${data.img_add[i]}" class="card-img-top" alt="${data.product[i]}" style="height: 150px; object-fit: contain;">
+                            <div class="card-body p-2">
+                                <h6 class="card-title mb-1">${data.product[i]}</h6>
+                                <p class="card-text text-muted small">Category: <strong>${data.category[i]}</strong></p>
+                                <p class="card-text text-muted small">Price: <strong>₹${data.price[i]}</strong></p>
+                                <!--<p class="card-text text-muted small">Stock: <strong>${data.quantity[i]}</strong> left</p>-->
+                                <div class="d-flex justify-content-between">
+                                    <!--<button class="btn btn-sm btn-primary">Edit Quantity</button>-->
+                                    <button class="btn btn-sm btn-danger" onclick="deleteProduct('${data.product[i]}')">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                }
+            }
+        })
+        .catch(error => console.error("Error fetching products:", error));
+}
+ // Delete Employee Function
+ window.deleteProduct = async function (productName) {
+    if (!productName) {
+        alert("Invalid product name!");
+        return;
+    }
+
+    if (confirm(`Are you sure you want to delete ${productName}?`)) {
+        try {
+            let response = await fetch(`/api/products/${encodeURIComponent(productName)}`, {
+                method: "DELETE",
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to delete product");
+            }
+
+            let result = await response.json();
+            alert(result.message);
+            loadProducts(); // Reload products after deletion
+        } catch (error) {
+            console.error("Error deleting product:", error);
+            alert("An error occurred while deleting the product.");
+        }
+    }
+};
+
+
+// ✅ Set up Category Filtering
+function setupCategoryFilters() {
+    let tabs = document.querySelectorAll("#categoryTabs .nav-link");
+    
+    tabs.forEach(tab => {
+        tab.addEventListener("click", function (e) {
+            e.preventDefault();
+            tabs.forEach(t => t.classList.remove("active"));
+            this.classList.add("active");
+            loadProducts(this.getAttribute("data-category"));
+        });
+    });
+}
+
+// ✅ Handle Add Product Form Submission
+document.getElementById("addProductForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    let formData = {
+        product_name: document.getElementById("productName").value,
+        image_address: document.getElementById("productImage").value,
+        product_category: document.getElementById("productCategory").value,
+        product_price: parseFloat(document.getElementById("productPrice").value),
+        product_quantity: parseInt(document.getElementById("productStock").value)
+    };
+
+    fetch("/api/add_product", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert("Product added successfully!");
+        loadProducts("All"); // Reload all products
+        document.getElementById("addProductForm").reset();
+        document.querySelector("#addProductModal .btn-close").click();
+    })
+    .catch(error => console.error("Error adding product:", error));
+});
+
+// Fetch and display the sales records in the table
+document.addEventListener("DOMContentLoaded", function () {
+  fetch("/api/sales")
+    .then((response) => response.json())
+    .then((data) => {
+      const tableBody = document.getElementById("salesTableBody");
+
+      // Convert raw data into an array of objects for easy filtering
+      const salesRecords = data.date.map((date, index) => ({
+        date: date,
+        emp_code: data.emp_code[index],
+        bill_no: data.bill_no[index],
+        total_cost: data.total_cost[index],
+      }));
+
+      // Function to populate the table with records
+      function populateTable(records) {
+        tableBody.innerHTML = ""; // Clear previous data
+
+        records.forEach((record) => {
+          const row = document.createElement("tr");
+
+          row.innerHTML = `
+            <td>${record.date}</td>
+            <td>${record.emp_code}</td>
+            <td>${record.bill_no}</td>
+            <td>${record.total_cost}</td>
+          `;
+
+          tableBody.appendChild(row);
+        });
+      }
+
+      // Initially populate the table with all records
+      populateTable(salesRecords);
+
+      // Add event listener for filtering
+      document.getElementById("filterDate").addEventListener("input", function () {
+        const selectedDate = this.value;
+        
+        if (selectedDate) {
+          // Filter records by selected date
+          const filteredRecords = salesRecords.filter(record => record.date === selectedDate);
+          populateTable(filteredRecords);
+        } else {
+          // If no date is selected, show all records
+          populateTable(salesRecords);
+        }
+      });
+    })
+    .catch((error) => console.error("Error fetching sales data:", error));
+});
+
+
+
+  // Function to display sales records in the table
+  
+  // Download PDF Report using jsPDF
+  function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Get the filtered date value
+    const filterDate = document.getElementById('filterDate').value;
+
+    fetch('/api/sales')
+      .then(response => response.json())
+      .then(data => {
+        let filteredData = {
+          date: [],
+          emp_code: [],
+          bill_no: [],
+          total_cost: []
+        };
+
+        // If a date is selected, filter records, otherwise use all data
+        data.date.forEach((date, index) => {
+          if (!filterDate || date === filterDate) {
+            filteredData.date.push(date);
+            filteredData.emp_code.push(data.emp_code[index]);
+            filteredData.bill_no.push(data.bill_no[index]);
+            filteredData.total_cost.push(data.total_cost[index]);
+          }
+        });
+
+        let yOffset = 20;
+        doc.setFont("times", "normal");  // Set font to Times New Roman
+        
+        // Add logo
+        doc.addImage('/static/images/logo png square.png', 'PNG', 80, yOffset, 40, 40); // Center logo
+        yOffset += 50;
+
+        // Title
+        doc.setFontSize(16);
+        doc.text('Sales Records', 105, yOffset, { align: 'center' });
+        yOffset += 10;
+
+        // Table Headers (Centered)
+        doc.setFontSize(12);
+        doc.setFont("times", "bold");
+        doc.text('Date', 50, yOffset, { align: 'center' });
+        doc.text('Employee Code', 85, yOffset, { align: 'center' });
+        doc.text('Bill Number', 120, yOffset, { align: 'center' });
+        doc.text('Total Cost', 155, yOffset, { align: 'center' });
+        yOffset += 10;
+
+        // Reset font for content
+        doc.setFont("times", "normal");
+
+        // Add table data
+        filteredData.date.forEach((date, index) => {
+          doc.text(date, 50, yOffset, { align: 'center' });
+          doc.text(filteredData.emp_code[index], 85, yOffset, { align: 'center' });
+          doc.text(String(filteredData.bill_no[index]), 120, yOffset, { align: 'center' });
+          doc.text(String(filteredData.total_cost[index]), 155, yOffset, { align: 'center' });
+          yOffset += 10;
+
+          // Check if yOffset exceeds page limit and add a new page if needed
+          if (yOffset > 280) {
+            doc.addPage();
+            yOffset = 20;
+          }
+        });
+
+        // Save PDF
+        doc.save('sales_report.pdf');
+      })
+      .catch(error => console.error('Error downloading PDF:', error));
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+        fetchAttendanceData();
+    });
+
+    let attendanceData = [];
+
+    function fetchAttendanceData() {
+        fetch("/api/attendance") // Your API endpoint
+            .then(response => response.json())
+            .then(data => {
+                if (Array.isArray(data)) {
+                    attendanceData = data.map(item => ({
+                        date: item.date,
+                        emp_code: item.emp_code
+                    }));
+                } else if (data.date && data.emp_code) {
+                    attendanceData = data.date.map((date, index) => ({
+                        date: date,
+                        emp_code: data.emp_code[index]
+                    }));
+                } else {
+                    console.error("Invalid data format received from API:", data);
+                    return;
+                }
+                populateTable(attendanceData);
+            })
+            .catch(error => console.error("Error fetching attendance data:", error));
+    }
+
+    function populateTable(records) {
+        const tableBody = document.getElementById("AttendanceTableBody");
+        tableBody.innerHTML = "";
+
+        records.forEach(record => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${record.date}</td>
+                <td>${record.emp_code}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    function filterAttendance() {
+        const selectedDate = document.getElementById("filterEMPDate").value;
+        const selectedEmpCode = document.getElementById("filterEMPCode").value.toUpperCase();
+
+        const filteredRecords = attendanceData.filter(record => {
+            const dateMatch = !selectedDate || record.date === selectedDate;
+            const empCodeMatch = !selectedEmpCode || record.emp_code.toUpperCase() === selectedEmpCode;
+            return dateMatch && empCodeMatch;
+        });
+
+        populateTable(filteredRecords);
+    }
+
+    document.getElementById("filterEMPDate").addEventListener("input", filterAttendance);
+    document.getElementById("filterEMPCode").addEventListener("input", filterAttendance);
+
+  
+  // Download PDF Report using jsPDF
+  function downloadAPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Get the filtered date and EMPCode values
+    const filterDate = document.getElementById('filterEMPDate').value;
+    const filterEMPCode = document.getElementById('filterEMPCode').value;
+
+    fetch('/api/attendance')
+        .then(response => response.json())
+        .then(data => {
+            let filteredData = {
+                date: [],
+                emp_code: [],
+            };
+
+            // Filter records based on both date and EMPCode
+            data.date.forEach((date, index) => {
+                // If filterDate or filterEMPCode is provided, only add matching records
+                if (
+                    (!filterDate || date === filterDate) &&
+                    (!filterEMPCode || data.emp_code[index] === filterEMPCode)
+                ) {
+                    filteredData.date.push(date);
+                    filteredData.emp_code.push(data.emp_code[index]);
+                }
+            });
+
+            if (filteredData.date.length === 0) {
+                alert('No records found for the selected filters.');
+                return;
+            }
+
+            let yOffset = 20;
+            doc.setFont("times", "normal");  // Set font to Times New Roman
+
+            // Add logo
+            doc.addImage('/static/images/logo png square.png', 'PNG', 80, yOffset, 40, 40); // Center logo
+            yOffset += 50;
+
+            // Title
+            doc.setFontSize(16);
+            doc.text('Employee Attendance Records', 105, yOffset, { align: 'center' });
+            yOffset += 10;
+
+            // Table Headers (Centered)
+            doc.setFontSize(12);
+            doc.setFont("times", "bold");
+            doc.text('Date', 50, yOffset, { align: 'center' });
+            doc.text('Employee Code', 85, yOffset, { align: 'center' });
+
+            yOffset += 10;
+
+            // Reset font for content
+            doc.setFont("times", "normal");
+
+            // Add table data
+            filteredData.date.forEach((date, index) => {
+                doc.text(date, 50, yOffset, { align: 'center' });
+                doc.text(filteredData.emp_code[index], 85, yOffset, { align: 'center' });
+
+                yOffset += 10;
+
+                // Check if yOffset exceeds page limit and add a new page if needed
+                if (yOffset > 280) {
+                    doc.addPage();
+                    yOffset = 20;
+                }
+            });
+
+            // Save PDF
+            doc.save('attendance_report.pdf');
+        })
+        .catch(error => console.error('Error downloading PDF:', error));
+}
+
+
+  // Fetch records when the page loads
+  window.onload = fetchSalesRecords;
+
+
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  </body>
+</html>
