@@ -1,1 +1,5 @@
-fastapi uvicorn pandas
+fastapi
+uvicorn[standard]
+jinja2
+pandas
+python-multipart
