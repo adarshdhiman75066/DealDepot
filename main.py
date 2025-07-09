@@ -48,6 +48,10 @@ for file_path, columns in {
 async def show_login_page(request: Request):
     return templates.TemplateResponse("index.html", {"request": request, "error": None})
 
+@app.get("/ping")
+async def ping():
+    return {"status": "alive"}
+
 @app.post("/login")
 async def login_user(request: Request, username: str = Form(...), password: str = Form(...)):
     users = pd.read_csv(USER_CSV)
