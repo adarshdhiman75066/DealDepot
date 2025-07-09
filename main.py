@@ -44,11 +44,12 @@ for file_path, columns in {
 
 # ---------------------- Routes ----------------------
 
-@app.get("/", response_class=HTMLResponse)
+@app.api_route("/", methods=["GET", "HEAD"], response_class=HTMLResponse)
 async def show_login_page(request: Request):
     return templates.TemplateResponse("index.html", {"request": request, "error": None})
 
-@app.get("/ping")
+
+@app.api_route("/ping", methods=["GET", "HEAD"])
 async def ping():
     return {"status": "alive"}
 
